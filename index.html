@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Accessible vanilla JavaScript checkout flow with validation and payment states." />
+    <title>Frontend Checkout Flow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#checkout-form">Skip to checkout form</a>
+
+    <main class="page-shell">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Secure checkout</p>
+          <h1 id="page-title">Complete your order</h1>
+          <p class="hero-copy">
+            A responsive, accessible checkout experience built with HTML, CSS, and vanilla JavaScript.
+          </p>
+        </div>
+        <div class="security-card" aria-label="Security information">
+          <span class="security-icon" aria-hidden="true">✓</span>
+          <div>
+            <strong>Encrypted payment form</strong>
+            <span>No real payment is processed in this demo.</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="checkout-layout">
+        <aside class="summary-card" aria-labelledby="summary-title">
+          <div class="summary-header">
+            <div>
+              <p class="eyebrow">Order summary</p>
+              <h2 id="summary-title">Workspace Pro Kit</h2>
+            </div>
+            <span class="badge">3 items</span>
+          </div>
+
+          <ul class="items-list" aria-label="Items in your cart">
+            <li>
+              <span class="item-thumb" aria-hidden="true">⌘</span>
+              <div>
+                <strong>Productivity Suite</strong>
+                <span>Annual license</span>
+              </div>
+              <b>$89.00</b>
+            </li>
+            <li>
+              <span class="item-thumb" aria-hidden="true">✦</span>
+              <div>
+                <strong>Priority Support</strong>
+                <span>12 months</span>
+              </div>
+              <b>$24.00</b>
+            </li>
+            <li>
+              <span class="item-thumb" aria-hidden="true">◈</span>
+              <div>
+                <strong>Cloud Backup</strong>
+                <span>100GB storage</span>
+              </div>
+              <b>$12.00</b>
+            </li>
+          </ul>
+
+          <dl class="price-list">
+            <div>
+              <dt>Subtotal</dt>
+              <dd>$125.00</dd>
+            </div>
+            <div>
+              <dt>Shipping</dt>
+              <dd>$7.00</dd>
+            </div>
+            <div>
+              <dt>Tax</dt>
+              <dd>$10.56</dd>
+            </div>
+            <div class="total-row">
+              <dt>Total</dt>
+              <dd>$142.56</dd>
+            </div>
+          </dl>
+
+          <div class="summary-note">
+            <strong>Demo cards</strong>
+            <p>Use <code>4242 4242 4242 4242</code> for success. Use any valid card ending in <code>0002</code> for failure.</p>
+          </div>
+        </aside>
+
+        <section class="checkout-card" aria-labelledby="checkout-title">
+          <div class="checkout-card-header">
+            <div>
+              <p class="eyebrow">Step-by-step flow</p>
+              <h2 id="checkout-title">Payment details</h2>
+            </div>
+            <p class="step-count" aria-live="polite"><span id="current-step-label">Step 1</span> of 4</p>
+          </div>
+
+          <ol class="progress" aria-label="Checkout progress">
+            <li class="progress-step is-active" data-progress-step="0">
+              <span>1</span>
+              <b>Contact</b>
+            </li>
+            <li class="progress-step" data-progress-step="1">
+              <span>2</span>
+              <b>Address</b>
+            </li>
+            <li class="progress-step" data-progress-step="2">
+              <span>3</span>
+              <b>Payment</b>
+            </li>
+            <li class="progress-step" data-progress-step="3">
+              <span>4</span>
+              <b>Review</b>
+            </li>
+          </ol>
+
+          <div id="status-message" class="status-message" role="status" aria-live="polite" hidden></div>
+
+          <form id="checkout-form" novalidate>
+            <fieldset class="form-step is-active" data-step="0">
+              <legend>Personal and contact information</legend>
+              <p class="step-help">We’ll use these details to send your receipt and order updates.</p>
+
+              <div class="form-grid two-columns">
+                <div class="field">
+                  <label for="fullName">Full name</label>
+                  <input id="fullName" name="fullName" type="text" autocomplete="name" placeholder="Jane Doe" required />
+                  <p class="error" id="fullName-error"></p>
+                </div>
+
+                <div class="field">
+                  <label for="email">Email address</label>
+                  <input id="email" name="email" type="email" autocomplete="email" placeholder="jane@example.com" required />
+                  <p class="error" id="email-error"></p>
+                </div>
+
+                <div class="field">
+                  <label for="phone">Phone number</label>
+                  <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+1 555 123 4567" required />
+                  <p class="error" id="phone-error"></p>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-step" data-step="1">
+              <legend>Billing address</legend>
+              <p class="step-help">Enter the address connected to your payment method.</p>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label for="addressLine1">Address line 1</label>
+                  <input id="addressLine1" name="addressLine1" type="text" autocomplete="address-line1" placeholder="123 Market Street" required />
+                  <p class="error" id="addressLine1-error"></p>
+                </div>
+
+                <div class="field">
+                  <label for="addressLine2">Address line 2 <span class="optional">optional</span></label>
+                  <input id="addressLine2" name="addressLine2" type="text" autocomplete="address-line2" placeholder="Apartment, suite, unit" />
+                  <p class="error" id="addressLine2-error"></p>
+                </div>
+              </div>
+
+              <div class="form-grid three-columns">
+                <div class="field">
+                  <label for="city">City</label>
+                  <input id="city" name="city" type="text" autocomplete="address-level2" placeholder="New York" required />
+                  <p class="error" id="city-error"></p>
+                </div>
+
+                <div class="field">
+                  <label for="country">Country</label>
+                  <select id="country" name="country" autocomplete="country-name" required>
+                    <option value="">Select country</option>
+                    <option>Canada</option>
+                    <option>France</option>
+                    <option>Germany</option>
+                    <option>Lebanon</option>
+                    <option>United Kingdom</option>
+                    <option>United States</option>
+                  </select>
+                  <p class="error" id="country-error"></p>
+                </div>
+
+                <div class="field">
+                  <label for="postalCode">Postal code</label>
+                  <input id="postalCode" name="postalCode" type="text" autocomplete="postal-code" placeholder="10001" required />
+                  <p class="error" id="postalCode-error"></p>
+                </div>
+              </div>
+
+              <div class="address-divider">
+                <h3>Shipping address</h3>
+                <label class="checkbox-field inline" for="sameAsBilling">
+                  <input id="sameAsBilling" name="sameAsBilling" type="checkbox" checked />
+                  <span>Shipping address is the same as billing</span>
+                </label>
+              </div>
+
+              <div id="shipping-fields" hidden>
+                <div class="form-grid">
+                  <div class="field">
+                    <label for="shipAddressLine1">Address line 1</label>
+                    <input id="shipAddressLine1" name="shipAddressLine1" type="text" autocomplete="shipping address-line1" placeholder="123 Market Street" />
+                    <p class="error" id="shipAddressLine1-error"></p>
+                  </div>
+
+                  <div class="field">
+                    <label for="shipAddressLine2">Address line 2 <span class="optional">optional</span></label>
+                    <input id="shipAddressLine2" name="shipAddressLine2" type="text" autocomplete="shipping address-line2" placeholder="Apartment, suite, unit" />
+                    <p class="error" id="shipAddressLine2-error"></p>
+                  </div>
+                </div>
+
+                <div class="form-grid three-columns">
+                  <div class="field">
+                    <label for="shipCity">City</label>
+                    <input id="shipCity" name="shipCity" type="text" autocomplete="shipping address-level2" placeholder="New York" />
+                    <p class="error" id="shipCity-error"></p>
+                  </div>
+
+                  <div class="field">
+                    <label for="shipCountry">Country</label>
+                    <select id="shipCountry" name="shipCountry" autocomplete="shipping country-name">
+                      <option value="">Select country</option>
+                      <option>Canada</option>
+                      <option>France</option>
+                      <option>Germany</option>
+                      <option>Lebanon</option>
+                      <option>United Kingdom</option>
+                      <option>United States</option>
+                    </select>
+                    <p class="error" id="shipCountry-error"></p>
+                  </div>
+
+                  <div class="field">
+                    <label for="shipPostalCode">Postal code</label>
+                    <input id="shipPostalCode" name="shipPostalCode" type="text" autocomplete="shipping postal-code" placeholder="10001" />
+                    <p class="error" id="shipPostalCode-error"></p>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-step" data-step="2">
+              <legend>Payment details</legend>
+              <p class="step-help">Card details are validated locally for demo purposes only.</p>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label for="cardName">Name on card</label>
+                  <input id="cardName" name="cardName" type="text" autocomplete="cc-name" placeholder="Jane Doe" required />
+                  <p class="error" id="cardName-error"></p>
+                </div>
+
+                <div class="field card-number-field">
+                  <label for="cardNumber">Card number</label>
+                  <input id="cardNumber" name="cardNumber" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" maxlength="23" required />
+                  <span class="card-brand" id="card-brand" aria-hidden="true">Card</span>
+                  <p class="error" id="cardNumber-error"></p>
+                </div>
+              </div>
+
+              <div class="form-grid three-columns">
+                <div class="field">
+                  <label for="expiry">Expiry date</label>
+                  <input id="expiry" name="expiry" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" maxlength="5" required />
+                  <p class="error" id="expiry-error"></p>
+                </div>
+
+                <div class="field">
+                  <label for="cvv">CVV</label>
+                  <input id="cvv" name="cvv" inputmode="numeric" autocomplete="cc-csc" placeholder="123" maxlength="4" required />
+                  <p class="error" id="cvv-error"></p>
+                </div>
+
+                <div class="field">
+                  <label for="saveCard">Card preference</label>
+                  <select id="saveCard" name="saveCard">
+                    <option value="no">Do not save card</option>
+                    <option value="yes">Save card securely</option>
+                  </select>
+                  <p class="error" id="saveCard-error"></p>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-step" data-step="3">
+              <legend>Review and confirm</legend>
+              <p class="step-help">Check your information before placing the order.</p>
+
+              <div class="review-grid" id="review-grid" aria-live="polite"></div>
+
+              <label class="checkbox-field" for="terms">
+                <input id="terms" name="terms" type="checkbox" required />
+                <span>I confirm that the information is correct and agree to the terms.</span>
+              </label>
+              <p class="error" id="terms-error"></p>
+            </fieldset>
+
+            <div class="form-actions">
+              <button class="button secondary" type="button" id="back-button">Back</button>
+              <button class="button primary" type="button" id="next-button">Continue</button>
+              <button class="button primary" type="submit" id="submit-button" hidden>
+                <span class="button-text">Pay $142.56</span>
+                <span class="spinner" aria-hidden="true"></span>
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+
+    <div class="modal" id="result-modal" role="dialog" aria-modal="true" aria-labelledby="result-title" aria-describedby="result-description" hidden>
+      <div class="modal-backdrop"></div>
+      <article class="modal-card">
+        <div class="result-icon" id="result-icon" aria-hidden="true"></div>
+        <h2 id="result-title"></h2>
+        <p id="result-description"></p>
+        <div class="modal-actions">
+          <button class="button secondary" type="button" id="edit-payment-button">Edit payment</button>
+          <button class="button primary" type="button" id="start-over-button">Start over</button>
+        </div>
+      </article>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
