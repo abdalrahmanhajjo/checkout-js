@@ -11,9 +11,9 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <a class="skip-link" href="#checkout-form">Skip to checkout form</a>
-
+   
     <main class="page-shell">
+      <!-- Hero: page title and a reassurance card about the demo's security. -->
       <section class="hero" aria-labelledby="page-title">
         <div>
           <p class="eyebrow">Secure checkout</p>
@@ -31,7 +31,9 @@
         </div>
       </section>
 
+      <!-- Two-column layout: sticky order summary beside the multi-step form. -->
       <div class="checkout-layout">
+        <!-- Order summary: line items, price breakdown, and demo-card hints. -->
         <aside class="summary-card" aria-labelledby="summary-title">
           <div class="summary-header">
             <div>
@@ -93,6 +95,7 @@
           </div>
         </aside>
 
+        <!-- Checkout panel: progress indicator + the four-step form. -->
         <section class="checkout-card" aria-labelledby="checkout-title">
           <div class="checkout-card-header">
             <div>
@@ -102,6 +105,7 @@
             <p class="step-count" aria-live="polite"><span id="current-step-label">Step 1</span> of 4</p>
           </div>
 
+          <!-- Step tracker; data-progress-step indices are driven by goToStep() in script.js. -->
           <ol class="progress" aria-label="Checkout progress">
             <li class="progress-step is-active" data-progress-step="0">
               <span>1</span>
@@ -121,9 +125,13 @@
             </li>
           </ol>
 
+          <!-- Live region for validation/help messages; toggled by show/hideStatus(). -->
           <div id="status-message" class="status-message" role="status" aria-live="polite" hidden></div>
 
+          <!-- novalidate: validation is handled in JS so we control the messaging.
+               Each fieldset is a step; data-step matches the stepFields indices. -->
           <form id="checkout-form" novalidate>
+            <!-- Step 1: contact details. -->
             <fieldset class="form-step is-active" data-step="0">
               <legend>Personal and contact information</legend>
               <p class="step-help">We’ll use these details to send your receipt and order updates.</p>
@@ -330,6 +338,12 @@
       </article>
     </div>
 
-    <script src="script.js"></script>
+    <script src="js/dom.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/validators.js"></script>
+    <script src="js/validation.js"></script>
+    <script src="js/steps.js"></script>
+    <script src="js/payment.js"></script>
+    <script src="js/events.js"></script>
   </body>
 </html>
