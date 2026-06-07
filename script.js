@@ -210,6 +210,21 @@ function validateStep(stepIndex) {
   return isValid;
 }
 
+// Validates every step before payment. If any step is invalid, jumps to the
+// first one with errors so the user can fix it — payment is blocked until all
+// fields on all pages are valid, not just the current step.
+function validateAllSteps() {
+  for (let index = 0; index < stepFields.length; index += 1) {
+    const isStepValid = stepFields[index].map(validateField).every(Boolean);
+    if (!isStepValid) {
+      goToStep(index);
+      validateStep(index);
+      return false;
+    }
+  }
+  return true;
+}
+
 function showStatus(message) {
   statusMessage.textContent = message;
   statusMessage.hidden = false;
@@ -404,7 +419,7 @@ backButton.addEventListener('click', () => {
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  if (!validateStep(currentStep)) return;
+  if (!validateAllSteps()) return;
 
   setSubmitting(true);
   hideStatus();
