@@ -9,9 +9,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css" />
+    <!-- Apply the saved/OS theme before paint to avoid a flash of the wrong theme. -->
+    <script>
+      (function () {
+        var saved = localStorage.getItem('theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = saved || (prefersDark ? 'dark' : 'light');
+      })();
+    </script>
   </head>
   <body>
-   
+    <button
+      class="theme-toggle"
+      type="button"
+      id="theme-toggle"
+      aria-pressed="false"
+      title="Toggle dark mode"
+    >
+      <span class="theme-icon" aria-hidden="true"></span>
+      <span class="theme-label"></span>
+    </button>
+
     <main class="page-shell">
       <!-- Hero: page title and a reassurance card about the demo's security. -->
       <section class="hero" aria-labelledby="page-title">
@@ -338,6 +356,7 @@
       </article>
     </div>
 
+    <script src="js/theme.js"></script>
     <script src="js/dom.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/validators.js"></script>
