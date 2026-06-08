@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Accessible vanilla JavaScript checkout flow with validation and payment states." />
-    <title>Frontend Checkout Flow</title>
+    <meta name="description" content="Securely review your order and complete your purchase on Stride." />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <title>Checkout · Stride</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -31,13 +32,40 @@
     </button>
 
     <main class="page-shell">
+      <!-- App bar: product brand + breadcrumb so checkout reads as one step in a larger product. -->
+      <header class="app-bar">
+        <a class="brand" href="/" aria-label="Stride home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="34" height="34">
+              <defs>
+                <linearGradient id="brand-grad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#5b86ff" />
+                  <stop offset="1" stop-color="#2457e6" />
+                </linearGradient>
+              </defs>
+              <rect width="64" height="64" rx="16" fill="url(#brand-grad)" />
+              <path d="M20 18 L34 32 L20 46" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M34 18 L48 32 L34 46" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.55" />
+            </svg>
+          </span>
+          <span class="brand-name">Stride</span>
+        </a>
+        <nav class="breadcrumb" aria-label="Checkout progress">
+          <a href="/">Store</a>
+          <span aria-hidden="true">/</span>
+          <a href="/">Cart</a>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page">Checkout</span>
+        </nav>
+      </header>
+
       <!-- Hero: page title and a reassurance card about the demo's security. -->
       <section class="hero" aria-labelledby="page-title">
         <div>
           <p class="eyebrow">Secure checkout</p>
           <h1 id="page-title">Complete your order</h1>
           <p class="hero-copy">
-            A responsive, accessible checkout experience built with HTML, CSS, and vanilla JavaScript.
+            Review your items and finish checking out. Your details are encrypted in transit and used only to process and ship this order.
           </p>
         </div>
         <div class="security-card" aria-label="Security information">
@@ -169,7 +197,22 @@
 
                 <div class="field">
                   <label for="phone">Phone number</label>
-                  <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+1 555 123 4567" required />
+                  <div class="phone-row">
+                    <select id="phoneCountry" name="phoneCountry" aria-label="Country dial code" required>
+                      <option value="">Code</option>
+                      <option value="+1">🇺🇸 US +1</option>
+                      <option value="+1">🇨🇦 CA +1</option>
+                      <option value="+44">🇬🇧 UK +44</option>
+                      <option value="+33">🇫🇷 FR +33</option>
+                      <option value="+49">🇩🇪 DE +49</option>
+                      <option value="+961">🇱🇧 LB +961</option>
+                      <option value="+971">🇦🇪 AE +971</option>
+                      <option value="+61">🇦🇺 AU +61</option>
+                      <option value="+91">🇮🇳 IN +91</option>
+                    </select>
+                    <input id="phone" name="phone" type="tel" autocomplete="tel-national" inputmode="tel" placeholder="555 123 4567" required />
+                  </div>
+                  <p class="error" id="phoneCountry-error"></p>
                   <p class="error" id="phone-error"></p>
                 </div>
               </div>
@@ -276,45 +319,70 @@
 
             <fieldset class="form-step" data-step="2">
               <legend>Payment details</legend>
-              <p class="step-help">Card details are validated locally for demo purposes only.</p>
+              <p class="step-help">Choose how you'd like to pay. Card details are validated locally for demo purposes only.</p>
 
-              <div class="form-grid">
-                <div class="field">
-                  <label for="cardName">Name on card</label>
-                  <input id="cardName" name="cardName" type="text" autocomplete="cc-name" placeholder="Jane Doe" required />
-                  <p class="error" id="cardName-error"></p>
+              <div class="payment-methods" role="radiogroup" aria-label="Payment method">
+                <label class="payment-method">
+                  <input type="radio" name="paymentMethod" value="card" checked />
+                  <span class="payment-method-icon" aria-hidden="true">💳</span>
+                  <span class="payment-method-text">
+                    <strong>Credit / debit card</strong>
+                    <span>Pay securely with your card</span>
+                  </span>
+                </label>
+                <label class="payment-method">
+                  <input type="radio" name="paymentMethod" value="cash" />
+                  <span class="payment-method-icon" aria-hidden="true">💵</span>
+                  <span class="payment-method-text">
+                    <strong>Cash on delivery</strong>
+                    <span>Pay with cash when your order arrives</span>
+                  </span>
+                </label>
+              </div>
+
+              <div id="card-fields">
+                <div class="form-grid">
+                  <div class="field">
+                    <label for="cardName">Name on card</label>
+                    <input id="cardName" name="cardName" type="text" autocomplete="cc-name" placeholder="Jane Doe" required />
+                    <p class="error" id="cardName-error"></p>
+                  </div>
+
+                  <div class="field card-number-field">
+                    <label for="cardNumber">Card number</label>
+                    <input id="cardNumber" name="cardNumber" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" maxlength="23" required />
+                    <span class="card-brand" id="card-brand" aria-hidden="true">Card</span>
+                    <p class="error" id="cardNumber-error"></p>
+                  </div>
                 </div>
 
-                <div class="field card-number-field">
-                  <label for="cardNumber">Card number</label>
-                  <input id="cardNumber" name="cardNumber" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" maxlength="23" required />
-                  <span class="card-brand" id="card-brand" aria-hidden="true">Card</span>
-                  <p class="error" id="cardNumber-error"></p>
+                <div class="form-grid three-columns">
+                  <div class="field">
+                    <label for="expiry">Expiry date</label>
+                    <input id="expiry" name="expiry" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" maxlength="5" required />
+                    <p class="error" id="expiry-error"></p>
+                  </div>
+
+                  <div class="field">
+                    <label for="cvv">CVV</label>
+                    <input id="cvv" name="cvv" inputmode="numeric" autocomplete="cc-csc" placeholder="123" maxlength="4" required />
+                    <p class="error" id="cvv-error"></p>
+                  </div>
+
+                  <div class="field">
+                    <label for="saveCard">Card preference</label>
+                    <select id="saveCard" name="saveCard">
+                      <option value="no">Do not save card</option>
+                      <option value="yes">Save card securely</option>
+                    </select>
+                    <p class="error" id="saveCard-error"></p>
+                  </div>
                 </div>
               </div>
 
-              <div class="form-grid three-columns">
-                <div class="field">
-                  <label for="expiry">Expiry date</label>
-                  <input id="expiry" name="expiry" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/YY" maxlength="5" required />
-                  <p class="error" id="expiry-error"></p>
-                </div>
-
-                <div class="field">
-                  <label for="cvv">CVV</label>
-                  <input id="cvv" name="cvv" inputmode="numeric" autocomplete="cc-csc" placeholder="123" maxlength="4" required />
-                  <p class="error" id="cvv-error"></p>
-                </div>
-
-                <div class="field">
-                  <label for="saveCard">Card preference</label>
-                  <select id="saveCard" name="saveCard">
-                    <option value="no">Do not save card</option>
-                    <option value="yes">Save card securely</option>
-                  </select>
-                  <p class="error" id="saveCard-error"></p>
-                </div>
-              </div>
+              <p class="cash-note" id="cash-note" hidden>
+                No payment is needed now. Please have <strong>$142.56</strong> ready in cash when your order is delivered.
+              </p>
             </fieldset>
 
             <fieldset class="form-step" data-step="3">

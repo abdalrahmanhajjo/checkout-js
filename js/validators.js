@@ -10,10 +10,14 @@ const validators = {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Enter a valid email address.';
     return '';
   },
+  phoneCountry(value) {
+    if (!value) return 'Select your country code.';
+    return '';
+  },
   phone(value) {
     const digits = value.replace(/\D/g, '');
     if (!digits) return 'Enter your phone number.';
-    if (digits.length < 8 || digits.length > 15) return 'Enter a valid phone number.';
+    if (digits.length < 6 || digits.length > 15) return 'Enter a valid phone number.';
     return '';
   },
   addressLine1(value) {
@@ -57,10 +61,12 @@ const validators = {
     return '';
   },
   cardName(value) {
+    if (cashSelected()) return '';
     if (!value.trim()) return 'Enter the name shown on the card.';
     return '';
   },
   cardNumber(value) {
+    if (cashSelected()) return '';
     const digits = value.replace(/\D/g, '');
     if (!digits) return 'Enter your card number.';
     if (digits.length < 13 || digits.length > 19) return 'Card number must be 13 to 19 digits.';
@@ -68,6 +74,7 @@ const validators = {
     return '';
   },
   expiry(value) {
+    if (cashSelected()) return '';
     if (!value.trim()) return 'Enter the expiry date.';
     if (!/^\d{2}\/\d{2}$/.test(value)) return 'Use MM/YY format.';
 
@@ -82,6 +89,7 @@ const validators = {
     return '';
   },
   cvv(value) {
+    if (cashSelected()) return '';
     if (!value.trim()) return 'Enter your CVV.';
     if (!/^\d{3,4}$/.test(value)) return 'CVV must be 3 or 4 digits.';
     return '';
@@ -94,7 +102,7 @@ const validators = {
 
 // Field names grouped by the step they live on; index matches the step's data-step.
 const stepFields = [
-  ['fullName', 'email', 'phone'],
+  ['fullName', 'email', 'phoneCountry', 'phone'],
   ['addressLine1', 'city', 'country', 'postalCode', 'shipAddressLine1', 'shipCity', 'shipCountry', 'shipPostalCode'],
   ['cardName', 'cardNumber', 'expiry', 'cvv'],
   ['terms'],

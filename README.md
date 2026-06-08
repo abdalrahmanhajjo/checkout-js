@@ -1,6 +1,6 @@
-# Frontend Checkout Flow
+# Stride — Checkout
 
-A polished checkout flow built with **HTML, CSS, and vanilla JavaScript**. The project demonstrates UX decisions, accessible form handling, responsive layout, inline validation, loading states, and success/failure payment outcomes without relying on any frontend framework.
+The checkout feature for **Stride**, built with **HTML, CSS, and vanilla JavaScript**. It covers the part of the product flow that comes after the cart: collecting contact and address details, choosing a payment method, reviewing the order, and confirming. It demonstrates accessible form handling, responsive layout, inline validation, loading states, and success/failure outcomes without relying on any frontend framework.
 
 ## Features
 
@@ -8,8 +8,10 @@ A polished checkout flow built with **HTML, CSS, and vanilla JavaScript**. The p
 - Multi-step checkout flow:
   1. Personal and contact information
   2. Billing address, with an optional separate shipping address ("same as billing" toggle)
-  3. Payment details
+  3. Payment details (credit/debit card or cash on delivery)
   4. Review and confirmation
+- Revisit any finished step by clicking it in the progress tracker (keyboard accessible)
+- Phone number entry with a country dial-code selector (no manual `+code` typing)
 - Inline validation for every required field (full name, email, phone, address, card)
 - Card-specific validation: Luhn check, brand detection, auto-formatting, future-dated expiry
 - Accessible error messages using `aria-invalid`, `aria-describedby`, and live status regions

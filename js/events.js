@@ -9,6 +9,22 @@ backButton.addEventListener('click', () => {
   goToStep(currentStep - 1);
 });
 
+// Let users jump between unlocked steps via the progress tracker (click + keyboard).
+progressSteps.forEach((step, index) => {
+  step.addEventListener('click', () => navigateToStep(index));
+  step.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      navigateToStep(index);
+    }
+  });
+});
+
+// Switch between card and cash payment, updating fields, the note, and the button.
+paymentMethodInputs.forEach((input) => {
+  input.addEventListener('change', applyPaymentMethod);
+});
+
 // Final submit: re-validate everything, run the simulated payment, show result.
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -19,7 +35,7 @@ form.addEventListener('submit', async (event) => {
   hideStatus();
 
   try {
-    const result = await simulatePayment(fields.cardNumber.value);
+    const result = await simulatePayment(cashSelected() ? null : fields.cardNumber.value);
     showResult({ isSuccess: true, orderId: result.orderId });
   } catch (error) {
     showResult({ isSuccess: false, message: error.message });
@@ -95,5 +111,6 @@ modal.addEventListener('keydown', (event) => {
   }
 });
 
-// Render the initial step on load.
-goToStep(0);
+// Render the initial step and payment method state on load (no scroll on first paint).
+applyPaymentMethod();
+goToStep(0, { scroll: false });
